@@ -12,6 +12,7 @@
 	import { jwtDecode } from 'jwt-decode';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import { auth } from '../../stores/auth.ts';
+	import { toast } from 'svelte-sonner';
 
 	interface JwtDecoded {
 		sub: string;
@@ -53,6 +54,7 @@
 					role: decoded.role,
 					provider: decoded.provider
 				});
+				toast.success('Login successfully!');
 			});
 	};
 </script>

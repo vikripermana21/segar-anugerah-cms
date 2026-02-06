@@ -6,11 +6,18 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import { columns } from './column.ts';
 	import Sheet from '@/components/sheet.svelte';
+	import { useQuery } from '@sveltestack/svelte-query';
 
 	let data = $state([]);
 	let isOpen = $state(false);
 
-	api.get('/product-category').then((res) => (data = res.data.data));
+	const queryResult = useQuery('product-category-list', () =>
+		api.get('/product-category').then((res) => res)
+	);
+
+	$effect(() => {
+		console.log($queryResult);
+	});
 </script>
 
 <Sheet bind:isOpen>
