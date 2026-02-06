@@ -40,7 +40,7 @@
 										{...props}
 										class={cn([
 											{
-												'bg-primary text-secondary hover:bg-primary/90 hover:text-secondary':
+												'bg-sidebar-primary-foreground/10 text-sidebar-primary-foreground':
 													page.url.pathname.includes(item.url as string)
 											}
 										])}
@@ -57,7 +57,7 @@
 										{...props}
 										class={cn([
 											{
-												'bg-primary text-secondary hover:bg-primary/90 hover:text-secondary':
+												'bg-sidebar-primary-foreground/10 text-sidebar-primary-foreground':
 													page.url.pathname.includes(item.url as string)
 											}
 										])}
@@ -78,14 +78,14 @@
 						{#if !!item.items}
 							<Collapsible.Content>
 								<Sidebar.MenuSub
-									class={cn([{ 'border-primary': page.url.pathname.includes(item.url as string) }])}
+									class={cn([{ 'border-accent': page.url.pathname.includes(item.url as string) }])}
 								>
 									{#each item.items ?? [] as subItem (subItem.title)}
 										<Sidebar.MenuSubItem>
 											<Sidebar.MenuSubButton
 												class={cn([
 													{
-														'font-bold text-primary!':
+														'text-sidebar-accent-foreground! underline':
 															page.url.pathname === subItem.url ||
 															page.url.pathname.startsWith(`${subItem.url}/`)
 													}
