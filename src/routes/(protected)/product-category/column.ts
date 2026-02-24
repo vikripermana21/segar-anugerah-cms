@@ -1,12 +1,27 @@
+import { renderComponent } from '@/components/ui/data-table/render-helpers.js';
+import SubCategory from './parts/table/sub-category.svelte';
+import Actions from './parts/table/actions.svelte';
+
 export const columns = [
 	{
 		accessorKey: 'name',
 		header: 'Category Name'
 	},
 	{
-		accessorKey: 'description',
-		header: 'Description'
+		accessorKey: 'children',
+		header: 'Sub Category',
+		cell: ({ row }) => {
+			return renderComponent(SubCategory, { children: row.original.children });
+		}
+	},
+	{
+		id: 'actions',
+		header: '',
+		cell: ({ row }) => {
+			return renderComponent(Actions, { id: row.original.id, name: row.original.name });
+		}
 	}
+
 	// {
 	// 	id: 'actions',
 	// 	header: () => {

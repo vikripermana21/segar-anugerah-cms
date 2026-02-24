@@ -2,43 +2,42 @@
 	import DataTable from '@/components/data-table.svelte';
 	import Button from '@/components/ui/button/button.svelte';
 	import Input from '@/components/ui/input/input.svelte';
-	import api from '@/http/axios.js';
+	import LoaderCircle from '@lucide/svelte/icons/loader-circle';
 	import Plus from '@lucide/svelte/icons/plus';
 	import { columns } from './column.ts';
-	import Sheet from '@/components/sheet.svelte';
-	import { useQuery } from '@sveltestack/svelte-query';
+	import { isOpenCreate } from './stores.ts';
+	import { useProductCategoryQuery } from './services.ts';
+	import Modals from './modals.svelte';
 
-	let data = $state([]);
-	let isOpen = $state(false);
-
-	const queryResult = useQuery('product-category-list', () =>
-		api.get('/product-category').then((res) => res)
-	);
+	let search = $state('');
+	let debouncedSearch = $state('');
 
 	$effect(() => {
-		console.log($queryResult);
+		const rtSearch = search;
+		const debounce = setTimeout(() => {
+			debouncedSearch = rtSearch;
+		}, 500);
+
+		return () => clearTimeout(debounce);
 	});
+	const queryResult = $derived.by(() => useProductCategoryQuery({ search: debouncedSearch }));
 </script>
 
-<Sheet bind:isOpen>
-	{#snippet title()}
-		Create Product Category
-	{/snippet}
-
-	{#snippet description()}
-		Description
-	{/snippet}
-
-	<div>hello</div>
-</Sheet>
+<Modals />
 
 <div class="flex flex-col gap-5">
 	<div class="flex justify-between gap-5">
-		<Input />
-		<Button class="w-fit" onclick={() => (isOpen = true)}>
+		<Input bind:value={search} />
+		<Button class="w-fit" onclick={() => isOpenCreate.set(true)}>
 			<Plus />
 			<p>Create Product Category</p>
 		</Button>
 	</div>
-	<DataTable {data} {columns} />
+	{#if $queryResult.isFetching}
+		<div class="flex w-full items-center justify-center">
+			<LoaderCircle class="animate-spin" />
+		</div>
+	{:else}
+		<DataTable data={$queryResult?.data?.data} {columns} />
+	{/if}
 </div>
