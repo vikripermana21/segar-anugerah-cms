@@ -4,20 +4,14 @@ import { twMerge } from 'tailwind-merge';
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
-export function debounceState(source, delay = 300) {
-	let debounced = $state(source);
+export function debounce(func: unknown, delay: number) {
+	let timeoutId: unknown;
 
-	$effect(() => {
-		const id = setTimeout(() => {
-			debounced = source;
-		}, delay);
-
-		return () => clearTimeout(id);
-	});
-
-	return () => debounced;
+	return function (...args) {
+		clearTimeout(timeoutId);
+		timeoutId = setTimeout(() => func(...args), delay);
+	};
 }
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type WithoutChild<T> = T extends { child?: any } ? Omit<T, 'child'> : T;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
