@@ -1,27 +1,16 @@
+import { renderComponent } from '@/components/ui/data-table/render-helpers.js';
+import Actions from './parts/table/actions.svelte';
+
 export const columns = [
 	{
 		accessorKey: 'name',
 		header: 'Product Name'
 	},
 	{
-		accessorKey: 'description',
-		header: 'Description'
-	},
-	{
-		accessorKey: 'category',
-		header: 'Category'
+		id: 'actions',
+		header: '',
+		cell: ({ row }) => {
+			return renderComponent(Actions, { id: row.original.id, name: row.original.name });
+		}
 	}
-	// {
-	// 	id: 'actions',
-	// 	header: () => {
-	// 		const actionHeaderSnippet = createRawSnippet(() => ({
-	// 			render: () => `<div class="text-end">Action</div>`
-	// 		}));
-	// 		return renderSnippet(actionHeaderSnippet);
-	// 	},
-	// 	cell: ({ row }) => {
-	// 		// You can pass whatever you need from `row.original` to the component
-	// 		return renderComponent(DataTableActions, { id: row.original.id });
-	// 	}
-	// }
 ];
