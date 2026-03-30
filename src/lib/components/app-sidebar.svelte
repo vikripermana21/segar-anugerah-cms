@@ -34,7 +34,6 @@
 						title: 'List',
 						url: '/product'
 					},
-
 					{
 						title: 'Category',
 						url: '/product-category'

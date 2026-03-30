@@ -47,3 +47,24 @@ export const useDeleteProduct = () => {
 		return api.delete(`/product/${id}`);
 	});
 };
+
+export const useProductVariationList = (id: string, params: object) => {
+	return useQuery({
+		queryKey: [`product-variation-list-${id}`, { ...params }],
+		queryFn: async ({ signal, queryKey }) => {
+			const [, params] = queryKey;
+
+			return api.get(`/product/${id}/item`, { params, signal }).then((res) => res.data);
+		}
+	});
+};
+
+export const useCreateProductVariation = (id: string) => {
+	return useMutation((payload: FormData) => {
+		return api.post(`/product/${id}/item`, payload, {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		});
+	});
+};

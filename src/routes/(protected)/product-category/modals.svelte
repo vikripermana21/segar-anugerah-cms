@@ -10,8 +10,7 @@
 		isOpenCreateSub,
 		isOpenDelete,
 		isOpenDeleteSub,
-		isOpenEdit,
-		isOpenEditSub
+		isOpenEdit
 	} from './stores.ts';
 	import Button from '@/components/ui/button/button.svelte';
 	import Sheet from '@/components/sheet.svelte';
@@ -28,7 +27,6 @@
 				toast.success('Category has been deleted!');
 				isOpenDelete.set(false);
 				isOpenDeleteSub.set(false);
-				isOpenEditSub.set(false);
 				queryClient.invalidateQueries(PRODUCT_CATEGORY_QUERY_KEY);
 			}
 		});
@@ -99,15 +97,4 @@
 	{/snippet}
 
 	<EditProductCategory />
-</Sheet>
-<Sheet bind:open={$isOpenEditSub}>
-	{#snippet title()}
-		Edit Sub Product Category
-	{/snippet}
-
-	{#snippet description()}
-		Edit sub product category
-	{/snippet}
-
-	<EditSubProductCategory />
 </Sheet>

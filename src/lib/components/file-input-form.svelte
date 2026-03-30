@@ -3,21 +3,23 @@
 
 	let {
 		label,
-		placeholder,
+		placeholder = 'Insert an image',
 		constraints,
 		errors,
 		value = $bindable(),
 		accept
-	}: {
-		label: string;
-		placeholder?: string;
-		constraints?: Record<string, unknown>;
-		errors?: string[];
-		value?: File | null;
-		accept?: string;
 	} = $props();
 
 	const fileName = $derived(value?.name ?? '');
+
+	function handleFileSelect(file: File | null) {
+		if (file) {
+			const dataTransfer = new DataTransfer();
+			dataTransfer.items.add(file);
+			return dataTransfer.files;
+		}
+		return undefined;
+	}
 </script>
 
 <div>
@@ -29,7 +31,7 @@
 			{accept}
 			{placeholder}
 			{...constraints}
-			files={value ? [value] : undefined}
+			files={handleFileSelect(value)}
 			onchange={(e: Event) => {
 				const target = e.target as HTMLInputElement;
 				value = target.files?.[0] ?? null;

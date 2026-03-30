@@ -18,7 +18,7 @@
 
 <div class="flex flex-col gap-5">
 	<div class="flex justify-between gap-5">
-		<DebouncedInput bind:debouncedValue={search} />
+		<DebouncedInput bind:debouncedValue={search} placeholder="Search by name" />
 		<Button class="w-fit" onclick={() => isOpenCreate.set(true)}>
 			<Plus />
 			<p>Create Product Category</p>

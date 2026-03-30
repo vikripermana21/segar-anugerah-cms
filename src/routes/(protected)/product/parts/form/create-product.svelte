@@ -1,19 +1,19 @@
 <script lang="ts">
+	import FileInputForm from '@/components/file-input-form.svelte';
 	import InputForm from '@/components/input-form.svelte';
 	import SelectForm from '@/components/select-form.svelte';
-	import FileInputForm from '@/components/file-input-form.svelte';
-	import { superForm } from 'sveltekit-superforms';
-	import { useCreateProduct } from '../../services.js';
-	import { PRODUCT_DEFAULT_VALUE, PRODUCT_QUERY_KEY, PRODUCT_SCHEMA } from '../../constants.js';
-	import { queryClient } from '../../../../../config/client.js';
-	import { toast } from 'svelte-sonner';
-	import { yup as yupResolver } from 'sveltekit-superforms/adapters';
 	import { Button } from '@/components/ui/button/index.js';
+	import { toast } from 'svelte-sonner';
+	import { superForm } from 'sveltekit-superforms';
+	import { yup as yupResolver } from 'sveltekit-superforms/adapters';
+	import { queryClient } from '../../../../../config/client.js';
+	import { useProductCategoryAllQuery } from '../../../product-category/services.js';
+	import { PRODUCT_DEFAULT_VALUE, PRODUCT_QUERY_KEY, PRODUCT_SCHEMA } from '../../constants.js';
+	import { useCreateProduct } from '../../services.js';
 	import { isOpenCreate } from '../../stores.ts';
-	import { useProductCategoryQuery } from '../../../product-category/services.js';
 
 	let post = useCreateProduct();
-	const categoryQuery = useProductCategoryQuery({});
+	const categoryQuery = useProductCategoryAllQuery({});
 
 	const categoryOptions = $derived(
 		($categoryQuery.data?.data ?? []).map((category: { id: string; name: string }) => ({
@@ -70,6 +70,7 @@
 			placeholder="This products is ...."
 			constraints={$constraints.description}
 			errors={$errors.description}
+			textArea
 		/>
 		<SelectForm
 			bind:value={$form.category_id}

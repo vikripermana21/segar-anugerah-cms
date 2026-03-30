@@ -1,21 +1,21 @@
 <script lang="ts">
+	import FileInputForm from '@/components/file-input-form.svelte';
 	import InputForm from '@/components/input-form.svelte';
 	import SelectForm from '@/components/select-form.svelte';
-	import FileInputForm from '@/components/file-input-form.svelte';
 	import { Button } from '@/components/ui/button/index.js';
+	import X from '@lucide/svelte/icons/x';
 	import { toast } from 'svelte-sonner';
 	import { superForm } from 'sveltekit-superforms';
 	import { yup as yupResolver } from 'sveltekit-superforms/adapters';
 	import { queryClient } from '../../../../../config/client.js';
+	import { useProductCategoryAllQuery } from '../../../product-category/services.js';
 	import { PRODUCT_DEFAULT_VALUE, PRODUCT_QUERY_KEY, PRODUCT_SCHEMA } from '../../constants.js';
 	import { useEditProduct, useProductDetail } from '../../services.js';
 	import { dataSelected, isOpenEdit } from '../../stores.ts';
-	import { useProductCategoryQuery } from '../../../product-category/services.js';
-	import X from '@lucide/svelte/icons/x';
 
 	let result = useProductDetail($dataSelected.id);
 	let patch = useEditProduct($dataSelected.id);
-	const categoryQuery = useProductCategoryQuery({});
+	const categoryQuery = useProductCategoryAllQuery({});
 	let removeExistingImage = $state(false);
 
 	const categoryOptions = $derived(
@@ -76,7 +76,7 @@
 		{#if existingImageUrl && !removeExistingImage}
 			<div class="flex flex-col gap-2 text-sm">
 				<div class="relative w-full">
-					<img src={existingImageUrl} alt="Product Image" class="w-full rounded-md object-cover" />
+					<img src={existingImageUrl} alt="product" class="w-full rounded-md object-cover" />
 					<button
 						type="button"
 						onclick={() => (removeExistingImage = true)}
@@ -109,6 +109,7 @@
 			placeholder="This products is ...."
 			constraints={$constraints.description}
 			errors={$errors.description}
+			textArea
 		/>
 		<SelectForm
 			bind:value={$form.category_id}

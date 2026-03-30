@@ -10,6 +10,16 @@ export const PRODUCT_DEFAULT_VALUE = {
 	existing_image_url: ''
 };
 
+export const PRODUCT_VARIATION_DEFAULT_VALUE: {
+	product_image: FileList | unknown;
+	name: string;
+	price: number;
+} = {
+	product_image: null,
+	name: '',
+	price: 0
+};
+
 export const PRODUCT_SCHEMA = yup.object({
 	name: yup.string().required('Name is required'),
 	description: yup.string().required('Description is required'),
