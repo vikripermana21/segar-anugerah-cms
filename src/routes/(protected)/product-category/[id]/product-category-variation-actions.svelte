@@ -1,34 +1,24 @@
 <script lang="ts">
 	import Tooltip from '@/components/tooltip.svelte';
-	import Link from '@lucide/svelte/icons/link';
-	import Trash from '@lucide/svelte/icons/trash';
 	import Pencil from '@lucide/svelte/icons/pencil';
-	import Eye from '@lucide/svelte/icons/eye';
-	import { dataSelected, isOpenCreateSub, isOpenDelete, isOpenEdit } from '../../stores.ts';
-	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
+	import LayersPlus from '@lucide/svelte/icons/layers-plus';
+	import {
+		dataSelected,
+		isOpenCreateProductCategoryVariationOption,
+		isOpenDeleteProductCategoryVariation,
+		isOpenEditProductCategoryVariation
+	} from '../stores.ts';
+	import Trash from '@lucide/svelte/icons/trash';
 
 	let { id, name }: { id: string; name: string } = $props();
 </script>
 
 <div class="flex justify-end gap-2">
-	<Tooltip text="Detail">
+	<Tooltip text="Edit">
 		{#snippet trigger()}
 			<button
 				onclick={() => {
-					goto(resolve(`/product-category/${id}`));
-				}}
-			>
-				<Eye class="w-4 cursor-pointer stroke-slate-700" />
-			</button>
-		{/snippet}
-	</Tooltip>
-
-	<Tooltip text="Edit ">
-		{#snippet trigger()}
-			<button
-				onclick={() => {
-					isOpenEdit.set(true);
+					isOpenEditProductCategoryVariation.set(true);
 					dataSelected.set({
 						id,
 						name
@@ -39,27 +29,26 @@
 			</button>
 		{/snippet}
 	</Tooltip>
-
-	<Tooltip text="Add a sub category">
+	<Tooltip text="Add Option">
 		{#snippet trigger()}
 			<button
 				onclick={() => {
-					isOpenCreateSub.set(true);
+					isOpenCreateProductCategoryVariationOption.set(true);
 					dataSelected.set({
 						id,
 						name
 					});
 				}}
 			>
-				<Link class="w-4 cursor-pointer stroke-blue-700" />
+				<LayersPlus class="w-4 cursor-pointer stroke-blue-700" />
 			</button>
 		{/snippet}
 	</Tooltip>
-	<Tooltip text="Delete ">
+	<Tooltip text="Delete">
 		{#snippet trigger()}
 			<button
 				onclick={() => {
-					isOpenDelete.set(true);
+					isOpenDeleteProductCategoryVariation.set(true);
 					dataSelected.set({
 						id,
 						name

@@ -1,6 +1,21 @@
 import api from '@/http/axios.js';
 import { useMutation, useQuery } from '@sveltestack/svelte-query';
-import { PRODUCT_CATEGORY_QUERY_KEY } from './constants.ts';
+import {
+	PRODUCT_CATEGORY_ALL_QUERY_KEY,
+	PRODUCT_CATEGORY_QUERY_KEY,
+	PRODUCT_CATEGORY_VARIATION_QUERY_KEY
+} from './constants.ts';
+
+export const useProductCategoryAllQuery = (params: object) => {
+	return useQuery({
+		queryKey: [PRODUCT_CATEGORY_ALL_QUERY_KEY, { ...params }],
+		queryFn: async ({ signal, queryKey }) => {
+			const [, params] = queryKey;
+
+			return api.get('/product-category/all', { params, signal }).then((res) => res.data);
+		}
+	});
+};
 
 export const useProductCategoryQuery = (params: object) => {
 	return useQuery({
@@ -28,6 +43,17 @@ export const useCreateProductCategory = () => {
 	});
 };
 
+export const useProductCategoryVariation = (id: string, params: object) => {
+	return useQuery({
+		queryKey: [`product-category-variation-${id}`],
+		queryFn: async ({ signal }) => {
+			return api
+				.get(`/product-category/${id}/variation`, { signal, params })
+				.then((res) => res.data);
+		}
+	});
+};
+
 export const useEditProductCategory = (id: string) => {
 	return useMutation((payload: { name: string }) => {
 		return api.patch(`/product-category/${id}`, payload);
@@ -37,5 +63,70 @@ export const useEditProductCategory = (id: string) => {
 export const useDeleteProductCategory = () => {
 	return useMutation((id: string) => {
 		return api.delete(`/product-category/${id}`);
+	});
+};
+
+export const useProductVariationQuery = (params: object) => {
+	return useQuery({
+		queryKey: [PRODUCT_CATEGORY_VARIATION_QUERY_KEY, { ...params }],
+		queryFn: async ({ signal, queryKey }) => {
+			const [, params] = queryKey;
+
+			return api.get('/variation', { params, signal }).then((res) => res.data);
+		}
+	});
+};
+
+export const useProductVariationDetail = (id: string) => {
+	return useQuery({
+		queryKey: [`variation-detail-${id}`],
+		queryFn: async ({ signal }) => {
+			return api.get(`/variation/${id}`, { signal }).then((res) => res.data);
+		}
+	});
+};
+
+export const useCreateProductVariation = () => {
+	return useMutation((payload: { name: string; category_id?: string }) => {
+		return api.post('/variation', payload);
+	});
+};
+
+export const useEditProductVariation = (id: string) => {
+	return useMutation((payload: { name: string }) => {
+		return api.patch(`/variation/${id}`, payload);
+	});
+};
+
+export const useDeleteProductVariation = () => {
+	return useMutation((id: string) => {
+		return api.delete(`/variation/${id}`);
+	});
+};
+
+export const useProductVariationOptionDetail = (id: string) => {
+	return useQuery({
+		queryKey: [`variation-detail-${id}`],
+		queryFn: async ({ signal }) => {
+			return api.get(`/variation-option/${id}`, { signal }).then((res) => res.data);
+		}
+	});
+};
+
+export const useCreateProductVariationOption = () => {
+	return useMutation((payload: { value: string; variation_id?: string }) => {
+		return api.post('/variation-option', payload);
+	});
+};
+
+export const useEditProductVariationOption = (id: string) => {
+	return useMutation((payload: { name: string }) => {
+		return api.patch(`/variation-option/${id}`, payload);
+	});
+};
+
+export const useDeleteProductVariationOption = () => {
+	return useMutation((id: string) => {
+		return api.delete(`/variation-option/${id}`);
 	});
 };

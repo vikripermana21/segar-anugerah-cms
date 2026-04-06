@@ -4,17 +4,13 @@
 	import { toast } from 'svelte-sonner';
 	import { superForm } from 'sveltekit-superforms';
 	import { yup as yupResolver } from 'sveltekit-superforms/adapters';
-	import { queryClient } from '../../../../../config/client.js';
-	import {
-		PRODUCT_CATEGORY_DEFAULT_VALUE,
-		PRODUCT_CATEGORY_QUERY_KEY,
-		PRODUCT_CATEGORY_SCHEMA
-	} from '../../constants.js';
-	import { useEditProductCategory, useProductCategoryDetail } from '../../services.js';
-	import { dataSelected, isOpenEdit } from '../../stores.ts';
+	import { useEditProductVariation, useProductVariationDetail } from '../services.ts';
+	import { dataSelected, isOpenEditProductCategoryVariation } from '../stores.ts';
+	import { PRODUCT_CATEGORY_DEFAULT_VALUE, PRODUCT_CATEGORY_SCHEMA } from '../constants.ts';
+	import { queryClient } from '../../../../config/client.ts';
 
-	let result = useProductCategoryDetail($dataSelected.id);
-	let patch = useEditProductCategory($dataSelected.id);
+	let result = useProductVariationDetail($dataSelected.id);
+	let patch = useEditProductVariation($dataSelected.id);
 
 	const { form, errors, constraints, enhance, reset } = superForm(PRODUCT_CATEGORY_DEFAULT_VALUE, {
 		SPA: true,
@@ -23,9 +19,9 @@
 			if (form.valid) {
 				$patch.mutate(form.data, {
 					onSuccess: () => {
-						isOpenEdit.set(false);
-						toast.success('Product category has been edited successfully!');
-						queryClient.invalidateQueries(PRODUCT_CATEGORY_QUERY_KEY);
+						isOpenEditProductCategoryVariation.set(false);
+						toast.success('Product variation has been edited successfully!');
+						queryClient.invalidateQueries();
 					}
 				});
 			}
@@ -46,8 +42,8 @@
 	<div class="flex flex-col gap-6">
 		<InputForm
 			bind:value={$form.name}
-			label="Category Name"
-			placeholder="Ikan, Udang, dsb.."
+			label="Variation Name"
+			placeholder="Weight, Color, etc..."
 			constraints={$constraints.name}
 			errors={$errors.name}
 		/>
