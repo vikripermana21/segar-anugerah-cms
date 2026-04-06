@@ -21,3 +21,7 @@ export const PRODUCT_CATEGORY_VARIATION_DEFAULT_VALUE = {
 export const PRODUCT_CATEGORY_VARIATION_SCHEMA = yup.object({
 	name: yup.string().required('Name is required')
 });
+
+export const PRODUCT_CATEGORY_VARIATION_OPTION_SCHEMA = yup.object({
+	name: yup.string().required('Value is required')
+});

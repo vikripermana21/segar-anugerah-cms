@@ -10,10 +10,12 @@
 	import Plus from '@lucide/svelte/icons/plus';
 	import DataTable from '@/components/data-table.svelte';
 	import ProductVariationActions from './product-variation-actions.svelte';
-	import { renderComponent } from '@/components/ui/data-table/render-helpers.js';
+	import { renderComponent, renderSnippet } from '@/components/ui/data-table/render-helpers.js';
 	import Sheet from '@/components/sheet.svelte';
 	import { isOpenCreateProductVariation } from '../stores.ts';
 	import CreateProductVariation from './create-product-variation.svelte';
+	import { createRawSnippet } from 'svelte';
+	import type { ColumnDef } from '@tanstack/table-core';
 
 	const id = $derived(page.params.id || '');
 	let search = $state('');
@@ -26,34 +28,45 @@
 	});
 
 	// Columns for variations table
-	const variationColumns = [
+	const variationColumns: ColumnDef<{ id: string; name: string; product_image: string }>[] = [
 		{
 			accessorKey: 'product_image',
-			header: 'Image'
+			header: 'Image',
+			cell: ({ row }) => {
+				const imageSnippet = createRawSnippet<[{ image: string }]>((getImage) => {
+					const { image } = getImage();
+					return {
+						render: () => `<img src="${image}" class="h-20 w-20 rounded-md" />`
+					};
+				});
+				return renderSnippet(imageSnippet, {
+					image: row.original.product_image
+				});
+			}
 		},
 		{
 			accessorKey: 'sku',
 			header: 'SKU'
 		},
 		{
-			accessorKey: 'option',
+			accessorKey: 'price',
 			header: 'Price'
 		},
 		{
-			accessorKey: 'stock',
+			accessorKey: 'qty',
 			header: 'Qty'
-		},
-
-		{
-			id: 'actions',
-			header: '',
-			cell: ({ row }: { row: unknown }) => {
-				return renderComponent(ProductVariationActions, {
-					id: row.original.id,
-					name: row.original.name
-				});
-			}
 		}
+
+		// {
+		// 	id: 'actions',
+		// 	header: '',
+		// 	cell: ({ row }) => {
+		// 		return renderComponent(ProductVariationActions, {
+		// 			id: row.original.id,
+		// 			name: row.original.name
+		// 		});
+		// 	}
+		// }
 	];
 
 	const handleBack = () => {

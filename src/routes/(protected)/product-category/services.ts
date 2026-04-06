@@ -103,3 +103,30 @@ export const useDeleteProductVariation = () => {
 		return api.delete(`/variation/${id}`);
 	});
 };
+
+export const useProductVariationOptionDetail = (id: string) => {
+	return useQuery({
+		queryKey: [`variation-detail-${id}`],
+		queryFn: async ({ signal }) => {
+			return api.get(`/variation-option/${id}`, { signal }).then((res) => res.data);
+		}
+	});
+};
+
+export const useCreateProductVariationOption = () => {
+	return useMutation((payload: { value: string; variation_id?: string }) => {
+		return api.post('/variation-option', payload);
+	});
+};
+
+export const useEditProductVariationOption = (id: string) => {
+	return useMutation((payload: { name: string }) => {
+		return api.patch(`/variation-option/${id}`, payload);
+	});
+};
+
+export const useDeleteProductVariationOption = () => {
+	return useMutation((id: string) => {
+		return api.delete(`/variation-option/${id}`);
+	});
+};

@@ -24,7 +24,7 @@
 		{/snippet}
 	</Tooltip>
 
-	<Tooltip text="Edit category">
+	<Tooltip text="Edit ">
 		{#snippet trigger()}
 			<button
 				onclick={() => {
@@ -55,7 +55,7 @@
 			</button>
 		{/snippet}
 	</Tooltip>
-	<Tooltip text="Delete category">
+	<Tooltip text="Delete ">
 		{#snippet trigger()}
 			<button
 				onclick={() => {

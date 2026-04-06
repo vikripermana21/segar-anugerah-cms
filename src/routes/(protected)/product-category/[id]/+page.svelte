@@ -10,20 +10,40 @@
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import LoaderCircle from '@lucide/svelte/icons/loader-circle';
 	import Plus from '@lucide/svelte/icons/plus';
-	import { useProductCategoryDetail, useProductCategoryVariation } from '../services.ts';
 	import {
+		useDeleteProductVariation,
+		useDeleteProductVariationOption,
+		useProductCategoryDetail,
+		useProductCategoryVariation
+	} from '../services.ts';
+	import {
+		dataSelected,
 		isOpenCreateProductCategoryVariation,
-		isOpenCreateProductCategoryVariationOption
+		isOpenCreateProductCategoryVariationOption,
+		isOpenDeleteProductCategoryVariation,
+		isOpenDeleteProductCategoryVariationOption,
+		isOpenEditProductCategoryVariation,
+		isOpenEditProductCategoryVariationOption
 	} from '../stores.ts';
+	import CreateProductCategoryVariationOption from './create-product-category-variation-option.svelte';
 	import CreateProductCategoryVariation from './create-product-category-variation.svelte';
 	import ProductCategoryVariationActions from './product-category-variation-actions.svelte';
 	import ProductCategoryVariationOptions from './product-category-variation-options.svelte';
+	import Dialog from '@/components/dialog.svelte';
+	import { toast } from 'svelte-sonner';
+	import { queryClient } from '../../../../config/client.ts';
+	import EditProductCategoryVariation from './edit-product-category-variation.svelte';
+	import EditProductCategoryVariationOption from './edit-product-category-variation-option.svelte';
 
 	const id = $derived(page.params.id || '');
 	let search = $state('');
 
 	const queryResult = useProductCategoryDetail(id);
 	const variationQuery = $derived(useProductCategoryVariation(id, { search }));
+
+	const deleteVariation = useDeleteProductVariation();
+	const deleteVariationOption = useDeleteProductVariationOption();
+
 	const handleBack = () => {
 		goto(resolve('/product-category'));
 	};
@@ -58,6 +78,27 @@
 	const handleCreate = () => {
 		isOpenCreateProductCategoryVariation.set(true);
 	};
+
+	const handleDelete = () => {
+		$deleteVariation.mutate($dataSelected.id, {
+			onSuccess: () => {
+				toast.success('Product Variation has successfully deleted');
+				isOpenDeleteProductCategoryVariation.set(false);
+				queryClient.invalidateQueries();
+			}
+		});
+	};
+
+	const handleDeleteVariationOption = () => {
+		$deleteVariationOption.mutate($dataSelected.id, {
+			onSuccess: () => {
+				toast.success('Product Variation Option has successfully deleted');
+        isOpenEditProductCategoryVariationOption.set(false)
+				isOpenDeleteProductCategoryVariationOption.set(false);
+				queryClient.invalidateQueries();
+			}
+		});
+	};
 </script>
 
 <Sheet bind:open={$isOpenCreateProductCategoryVariation}>
@@ -81,8 +122,64 @@
 		Add product category variation option
 	{/snippet}
 
-	<div>Mantap</div>
+	<CreateProductCategoryVariationOption />
 </Sheet>
+
+<Sheet bind:open={$isOpenEditProductCategoryVariation}>
+	{#snippet title()}
+		Edit Product Variation
+	{/snippet}
+
+	{#snippet description()}
+		Edit product variation
+	{/snippet}
+
+	<EditProductCategoryVariation />
+</Sheet>
+
+<Sheet bind:open={$isOpenEditProductCategoryVariationOption}>
+	{#snippet title()}
+		Edit Product Variation Option
+	{/snippet}
+
+	{#snippet description()}
+		Edit product variation option
+	{/snippet}
+
+	<EditProductCategoryVariationOption />
+</Sheet>
+
+<Dialog bind:open={$isOpenDeleteProductCategoryVariation}>
+	{#snippet title()}
+		Delete Variation
+	{/snippet}
+
+	{#snippet description()}
+		Are you sure to delete <b>`{$dataSelected.name}`</b>?. <br /> Deleting the parent means you will lose
+		all of it`s children
+	{/snippet}
+
+	<div class="flex w-full">
+		<Button class="w-full" variant="destructive" onclick={handleDelete}>Delete</Button>
+	</div>
+</Dialog>
+
+<Dialog bind:open={$isOpenDeleteProductCategoryVariationOption}>
+	{#snippet title()}
+		Delete Variation Option
+	{/snippet}
+
+	{#snippet description()}
+		Are you sure to delete <b>`{$dataSelected.name}`</b>?. <br /> Deleting the parent means you will lose
+		all of it`s children
+	{/snippet}
+
+	<div class="flex w-full">
+		<Button class="w-full" variant="destructive" onclick={handleDeleteVariationOption}
+			>Delete</Button
+		>
+	</div>
+</Dialog>
 
 <div class="flex flex-col gap-5">
 	<div class="flex items-center gap-2">

@@ -4,7 +4,6 @@
 	import { superForm } from 'sveltekit-superforms';
 	import {
 		PRODUCT_CATEGORY_VARIATION_DEFAULT_VALUE,
-		PRODUCT_CATEGORY_VARIATION_QUERY_KEY,
 		PRODUCT_CATEGORY_VARIATION_SCHEMA
 	} from '../constants.ts';
 	import { isOpenCreateProductCategoryVariation } from '../stores.ts';
@@ -17,27 +16,30 @@
 	const id = $derived(page.params.id || '');
 	let post = useCreateProductVariation();
 
-	const { form, errors, constraints, enhance } = superForm(PRODUCT_CATEGORY_VARIATION_DEFAULT_VALUE, {
-		SPA: true,
-		validators: yupResolver(PRODUCT_CATEGORY_VARIATION_SCHEMA),
-		onUpdate({ form }) {
-			if (form.valid) {
-				$post.mutate(
-					{
-						category_id: id,
-						...form.data
-					},
-					{
-						onSuccess: () => {
-							isOpenCreateProductCategoryVariation.set(false);
-							toast.success('Product category has been added successfully!');
-							queryClient.invalidateQueries(PRODUCT_CATEGORY_VARIATION_QUERY_KEY);
+	const { form, errors, constraints, enhance } = superForm(
+		PRODUCT_CATEGORY_VARIATION_DEFAULT_VALUE,
+		{
+			SPA: true,
+			validators: yupResolver(PRODUCT_CATEGORY_VARIATION_SCHEMA),
+			onUpdate({ form }) {
+				if (form.valid) {
+					$post.mutate(
+						{
+							category_id: id,
+							...form.data
+						},
+						{
+							onSuccess: () => {
+								isOpenCreateProductCategoryVariation.set(false);
+								toast.success('Product category has been added successfully!');
+								queryClient.invalidateQueries();
+							}
 						}
-					}
-				);
+					);
+				}
 			}
 		}
-	});
+	);
 </script>
 
 <form class="flex h-full flex-col justify-between" method="POST" use:enhance>
